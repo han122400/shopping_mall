@@ -13,13 +13,13 @@ import {
 } from '@/components/ui/card'
 import { APP_NAME } from '@/lib/constants'
 
-import CredentialsSignInForm from './credentials-signin-form'
+import CredentialsSignUpForm from './credentials-signup-form'
 
 export const metadata: Metadata = {
-  title: `Sign In - ${APP_NAME}`,
+  title: `Sign Up - ${APP_NAME}`,
 }
 
-export default async function SignIn({
+export default async function SignUp({
   searchParams,
 }: {
   searchParams: Promise<{ callbackUrl?: string }>
@@ -43,13 +43,13 @@ export default async function SignIn({
               priority
             />
           </Link>
-          <CardTitle className="text-center">Sign In</CardTitle>
+          <CardTitle className="text-center">Sign Up</CardTitle>
           <CardDescription className="text-center">
-            Select a method to sign in to your account
+            Create your account to start shopping
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
-          <CredentialsSignInForm />
+          <CredentialsSignUpForm />
         </CardContent>
       </Card>
     </div>

@@ -1,4 +1,6 @@
 'use client'
+
+import Link from 'next/link'
 import { useActionState } from 'react'
 import { useFormStatus } from 'react-dom'
 import { useSearchParams } from 'next/navigation'
@@ -6,12 +8,11 @@ import { useSearchParams } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { signInWithCredentials } from '@/lib/actions/user.actions'
-import { signInDefaultValues } from '@/lib/constants'
-import Link from 'next/link'
+import { signUpWithCredentials } from '@/lib/actions/user.actions'
+import { signUpDefaultValues } from '@/lib/constants'
 
-export default function CredentialsSignInForm() {
-  const [data, action] = useActionState(signInWithCredentials, {
+export default function CredentialsSignUpForm() {
+  const [data, action] = useActionState(signUpWithCredentials, {
     message: '',
     success: false,
   })
@@ -19,19 +20,30 @@ export default function CredentialsSignInForm() {
   const searchParams = useSearchParams()
   const callbackUrl = searchParams.get('callbackUrl') || '/'
 
-  const SignInButton = () => {
+  const SignUpButton = () => {
     const { pending } = useFormStatus()
     return (
       <Button disabled={pending} className="w-full" variant="default">
-        {pending ? 'Submitting...' : 'Sign In with credentials'}
+        {pending ? 'Submitting...' : 'Create account'}
       </Button>
     )
   }
 
   return (
-    <form action={action}>
+    <form action={action} className="space-y-6">
       <input type="hidden" name="callbackUrl" value={callbackUrl} />
       <div className="space-y-6">
+        <div>
+          <Label htmlFor="name">Name</Label>
+          <Input
+            id="name"
+            name="name"
+            placeholder="Your name"
+            required
+            type="text"
+            defaultValue={signUpDefaultValues.name}
+          />
+        </div>
         <div>
           <Label htmlFor="email">Email</Label>
           <Input
@@ -40,7 +52,7 @@ export default function CredentialsSignInForm() {
             placeholder="m@example.com"
             required
             type="email"
-            defaultValue={signInDefaultValues.email}
+            defaultValue={signUpDefaultValues.email}
           />
         </div>
         <div>
@@ -50,33 +62,32 @@ export default function CredentialsSignInForm() {
             name="password"
             required
             type="password"
-            defaultValue={signInDefaultValues.password}
+            minLength={6}
+            defaultValue={signUpDefaultValues.password}
           />
         </div>
         <div>
-          <SignInButton />
+          <SignUpButton />
         </div>
 
-        {data && !data.success && (
-          <div className="text-center text-destructive">{data.message}</div>
-        )}
-        {!data && (
-          <div className="text-center text-destructive">
-            Unknown error happened.{' '}
-            <Button onClick={() => window.location.reload()}>
-              Please reload
-            </Button>
+        {data?.message && (
+          <div
+            className={`text-center ${
+              data.success ? 'text-green-600' : 'text-destructive'
+            }`}
+          >
+            {data.message}
           </div>
         )}
 
         <div className="text-sm text-center text-muted-foreground">
-          Don&apos;t have an account?{' '}
+          이미 계정이 있으신가요?{' '}
           <Link
             target="_self"
             className="link"
-            href={`/sign-up?callbackUrl=${encodeURIComponent(callbackUrl)}`}
+            href={`/sign-in?callbackUrl=${encodeURIComponent(callbackUrl)}`}
           >
-            Sign Up
+            Sign In
           </Link>
         </div>
       </div>
